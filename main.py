@@ -37,7 +37,7 @@ class DBLP:
             "[*] Searching {} on {}".format(termcolor.colored(area, "cyan"), conf))
         params = {
             "q": keyword,
-            "h": 30,
+            "h": 100,
             "f": 0,
             "s": "ydvspc",
         }
