@@ -46,12 +46,12 @@ dblp-spider --keywords "DNS Security" "BGP Security" --output result
 1. File->Import
 2. Select `summary.bib`
 
-## Acknownledgement
+## Acknowledgement
 
 * [DBLP](https://dblp.uni-trier.de/)
 * [默小西](https://github.com/mo-xiaoxi)
 
-## Reference
+## References
 
 * [如何建立独属于你自己的论文数据库 - 默小西](https://moxiaoxi.info/papers/2020/10/18/Papers/)
 * [How to use the dblp search? - DBLP](https://dblp.org/faq/How+to+use+the+dblp+search)
