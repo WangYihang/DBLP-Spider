@@ -16,7 +16,7 @@ class Conference:
             elif ccf_class.endswith("B"):
                 return "{} - {} ({})".format(termcolor.colored(self.keywords[0], "yellow"), self.name, self.short)
             elif ccf_class.endswith("C"):
-                return "{} - {} ({})".format(termcolor.colored(self.keywords[0], "grey"), self.name, self.short)
+                return "{} - {} ({})".format(termcolor.colored(self.keywords[0], "magenta"), self.name, self.short)
             else:
                 return "{} - {} ({})".format(self.keywords[0], self.name, self.short)
         else:

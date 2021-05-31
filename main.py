@@ -14,7 +14,10 @@ def print_info(x): return termcolor.cprint(x)
 
 
 def legalise_filename(filename):
-    illegal_chars = {"|": "OR"}
+    illegal_chars = {
+        "|": "OR",
+        "/": "-",
+    }
     legal_filename = filename
     for k, v in illegal_chars.items():
         legal_filename = legal_filename.replace(k, v)
@@ -42,21 +45,19 @@ class DBLP:
         articles = self.parse(content)
         return articles
 
-    def save(self, area, articles):
-        folder = os.path.join("result", area)
-        try:
-            os.makedirs(folder)
-        except:
-            pass
-        bibtexes = []
+    def save(self, area, conf, articles):
+        folder = os.path.join("result", area, conf.short)
         if len(articles) > 0:
-            for article in articles:
-                bibtexes.append(article.bibtex)
-            bibtexes_filename = legalise_filename(
-                "{} - {}.bib".format(area, conf.short))
-            bibtexes_path = os.path.join(folder, bibtexes_filename)
-            with open(bibtexes_path, "w") as f:
-                f.write("\n".join(bibtexes))
+            try: os.makedirs(folder)
+            except: pass
+        for article in articles:
+            print("\t{}".format(termcolor.colored(article, "green")), end="")
+            filename = legalise_filename("{}.bib".format(article.dblp_key))
+            filepath = os.path.join(folder, filename)
+            if not os.path.exists(filepath):
+                with open(filepath, "w") as f:
+                    f.write(article.get_bibtex())
+            print(" {} {}".format(termcolor.colored("=>", "yellow"), termcolor.colored(filepath, "cyan")))
 
     def parse(self, content):
         soup = BeautifulSoup(content, 'html.parser')
@@ -78,7 +79,6 @@ class DBLP:
                 "li", class_="drop-down")[1].find("div", class_="head").find("a")["href"]
             article = Article(title, authors, confname,
                               pub_year, dblp_key, doi_link, bibtex_link)
-            print_success("\t{}".format(article))
             articles.append(article)
         return articles
 
@@ -94,8 +94,7 @@ def main():
                 print_error("[{}] articles found".format(len(articles)))
             else:
                 print_info("[{}] articles found".format(len(articles)))
-            dblp.save(area, articles)
-
+            dblp.save(area, conf, articles)
 
 if __name__ == "__main__":
     main()

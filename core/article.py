@@ -11,10 +11,9 @@ class Article:
         self.year = year
         self.dblp_key = dblp_key
         self.bibtex_link = bibtex_link
-        self.bibtex = self.get_bibtex()
 
     def __str__(self):
-        return "[{} - {}] {} - {} ({})".format(self.conf, self.year, self.title, ",".join(self.authors), self.dblp_key)
+        return "[{} - {}] {} - {}".format(self.conf, self.year, self.title, self.authors[0])
 
     def get_bibtex(self):
         response = requests.get(self.bibtex_link)
