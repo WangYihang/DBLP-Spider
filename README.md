@@ -5,7 +5,7 @@ A spider tool for downloading the DBLP search results into local BibTeX files.
 ## Install
 
 ```bash
-pip install dblp-spider
+pip3 install -i https://pypi.org/simple/ dblp-spider
 ```
 
 ## Usage
