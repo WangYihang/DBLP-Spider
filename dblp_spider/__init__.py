@@ -111,11 +111,15 @@ def summary(base_folder, area):
 def main():
 
     parser = argparse.ArgumentParser(description='DBLP BibTeX Spider')
-    parser.add_argument('--keywords', required=True, nargs='+', help='DBLP searching keywords')
+    parser.add_argument('--keywords', required=True,
+                        nargs='+', help='DBLP searching keywords')
 
-    parser.add_argument('--ccf-a', required=False, help='Search in CCF A recommandation venues', action="store_true")
-    parser.add_argument('--ccf-b', required=False, help='Search in CCF B recommandation venues', action="store_true")
-    parser.add_argument('--ccf-c', required=False, help='Search in CCF C recommandation venues', action="store_true")
+    parser.add_argument('--ccf-a', required=False,
+                        help='Search in CCF A recommandation venues', action="store_true")
+    parser.add_argument('--ccf-b', required=False,
+                        help='Search in CCF B recommandation venues', action="store_true")
+    parser.add_argument('--ccf-c', required=False,
+                        help='Search in CCF C recommandation venues', action="store_true")
 
     parser.add_argument('--output', required=True, help='Output BibTeX folder')
     parser.add_argument('--version', action='version', version=__version__)
@@ -143,6 +147,7 @@ def main():
                 print_info("[{}] articles found".format(len(articles)))
             dblp.save(args.output, area, venue, articles)
         summary(args.output, area)
+
 
 if __name__ == "__main__":
     main()
