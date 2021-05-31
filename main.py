@@ -2,10 +2,13 @@ import os
 import requests
 import termcolor
 import glob
+import argparse
 
 from core.article import Article
 from core.conference import Conferences
 from bs4 import BeautifulSoup
+
+__version__ = "0.0.1"
 
 
 def print_success(x): return termcolor.cprint(x, 'green')
@@ -49,10 +52,13 @@ class DBLP:
         return articles
 
     def save(self, area, conf, articles):
-        folder = os.path.join("result", legalise_filename(area), legalise_filename(conf.short))
+        folder = os.path.join("result", legalise_filename(
+            area), legalise_filename(conf.short))
         if len(articles) > 0:
-            try: os.makedirs(folder)
-            except: pass
+            try:
+                os.makedirs(folder)
+            except:
+                pass
         for article in articles:
             print("\t{}".format(termcolor.colored(article, "green")), end="")
             filename = legalise_filename("{}.bib".format(article.dblp_key))
@@ -60,7 +66,8 @@ class DBLP:
             if not os.path.exists(filepath):
                 with open(filepath, "w") as f:
                     f.write(article.get_bibtex())
-            print(" {} {}".format(termcolor.colored("=>", "yellow"), termcolor.colored(filepath, "cyan")))
+            print(" {} {}".format(termcolor.colored("=>", "yellow"),
+                                  termcolor.colored(filepath, "cyan")))
 
     def parse(self, content):
         soup = BeautifulSoup(content, 'html.parser')
@@ -85,6 +92,7 @@ class DBLP:
             articles.append(article)
         return articles
 
+
 def summary(area):
     # Save summary bibtex
     folder = os.path.join("result", legalise_filename(area))
@@ -96,10 +104,16 @@ def summary(area):
     with open(os.path.join(folder, "summary.bib"), "w") as f:
         f.write("\n".join(bibtexes_contents))
 
+
 def main():
+
+    parser = argparse.ArgumentParser(description='DBLP BibTeX Spider')
+    parser.add_argument('--keywords', required=True, nargs='+', help='DBLP searching keywords')
+    parser.add_argument('--version', action='version', version=__version__)
+    args = parser.parse_args()
+
     dblp = DBLP()
-    areas = ["TCP Security"]
-    for area in areas:
+    for area in args.keywords:
         for conf in Conferences:
             articles = dblp.search(area, conf)
             if len(articles) == 0:
@@ -108,6 +122,7 @@ def main():
                 print_info("[{}] articles found".format(len(articles)))
             dblp.save(area, conf, articles)
         summary(area)
+
 
 if __name__ == "__main__":
     main()
