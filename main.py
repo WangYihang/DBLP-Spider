@@ -1,6 +1,7 @@
 import os
 import requests
 import termcolor
+import glob
 
 from core.article import Article
 from core.conference import Conferences
@@ -17,6 +18,8 @@ def legalise_filename(filename):
     illegal_chars = {
         "|": "OR",
         "/": "-",
+        "(": "[",
+        ")": "]",
     }
     legal_filename = filename
     for k, v in illegal_chars.items():
@@ -46,7 +49,7 @@ class DBLP:
         return articles
 
     def save(self, area, conf, articles):
-        folder = os.path.join("result", area, conf.short)
+        folder = os.path.join("result", legalise_filename(area), legalise_filename(conf.short))
         if len(articles) > 0:
             try: os.makedirs(folder)
             except: pass
@@ -82,11 +85,20 @@ class DBLP:
             articles.append(article)
         return articles
 
+def summary(area):
+    # Save summary bibtex
+    folder = os.path.join("result", legalise_filename(area))
+    bibtexes = glob.glob(os.path.join(folder, "**", "*.bib"))
+    bibtexes_contents = []
+    for bibtex in bibtexes:
+        with open(bibtex, "r") as f:
+            bibtexes_contents.append(f.read())
+    with open(os.path.join(folder, "summary.bib"), "w") as f:
+        f.write("\n".join(bibtexes_contents))
 
 def main():
     dblp = DBLP()
-    areas = ["Taint Analysis", "DNS Security", "PHP",
-             "DNS", "DNS (Poison OR Spoof OR Inject)"]
+    areas = ["TCP Security"]
     for area in areas:
         for conf in Conferences:
             articles = dblp.search(area, conf)
@@ -95,6 +107,7 @@ def main():
             else:
                 print_info("[{}] articles found".format(len(articles)))
             dblp.save(area, conf, articles)
+        summary(area)
 
 if __name__ == "__main__":
     main()
