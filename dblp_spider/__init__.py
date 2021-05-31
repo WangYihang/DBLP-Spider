@@ -4,11 +4,14 @@ import termcolor
 import glob
 import argparse
 
-from core.article import Article
-from core.conference import Conferences
+from .core.article import Article
+from .core.conference import Conferences
+from .core.conference import Conferences_CCF_A
+from .core.conference import Conferences_CCF_B
+from .core.conference import Conferences_CCF_C
 from bs4 import BeautifulSoup
 
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 
 
 def print_success(x): return termcolor.cprint(x, 'green')
@@ -109,21 +112,37 @@ def main():
 
     parser = argparse.ArgumentParser(description='DBLP BibTeX Spider')
     parser.add_argument('--keywords', required=True, nargs='+', help='DBLP searching keywords')
+
+    parser.add_argument('--ccf-a', required=False, help='Search in CCF A recommandation venues', action="store_true")
+    parser.add_argument('--ccf-b', required=False, help='Search in CCF B recommandation venues', action="store_true")
+    parser.add_argument('--ccf-c', required=False, help='Search in CCF C recommandation venues', action="store_true")
+
     parser.add_argument('--output', required=True, help='Output BibTeX folder')
     parser.add_argument('--version', action='version', version=__version__)
     args = parser.parse_args()
 
     dblp = DBLP()
+
+    venues = set()
+    if (not args.ccf_a) and (not args.ccf_b) and (not args.ccf_c):
+        venues = venues.union(Conferences)
+    else:
+        if args.ccf_a:
+            venues = venues.union(Conferences_CCF_A)
+        if args.ccf_b:
+            venues = venues.union(Conferences_CCF_B)
+        if args.ccf_c:
+            venues = venues.union(Conferences_CCF_C)
+
     for area in args.keywords:
-        for conf in Conferences:
-            articles = dblp.search(area, conf)
+        for venue in venues:
+            articles = dblp.search(area, venue)
             if len(articles) == 0:
                 print_error("[{}] articles found".format(len(articles)))
             else:
                 print_info("[{}] articles found".format(len(articles)))
-            dblp.save(args.output, area, conf, articles)
+            dblp.save(args.output, area, venue, articles)
         summary(args.output, area)
-
 
 if __name__ == "__main__":
     main()
