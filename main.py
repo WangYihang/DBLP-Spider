@@ -51,8 +51,8 @@ class DBLP:
         articles = self.parse(content)
         return articles
 
-    def save(self, area, conf, articles):
-        folder = os.path.join("result", legalise_filename(
+    def save(self, base_folder, area, conf, articles):
+        folder = os.path.join(base_folder, legalise_filename(
             area), legalise_filename(conf.short))
         if len(articles) > 0:
             try:
@@ -93,9 +93,9 @@ class DBLP:
         return articles
 
 
-def summary(area):
+def summary(base_folder, area):
     # Save summary bibtex
-    folder = os.path.join("result", legalise_filename(area))
+    folder = os.path.join(base_folder, legalise_filename(area))
     bibtexes = glob.glob(os.path.join(folder, "**", "*.bib"))
     bibtexes_contents = []
     for bibtex in bibtexes:
@@ -109,6 +109,7 @@ def main():
 
     parser = argparse.ArgumentParser(description='DBLP BibTeX Spider')
     parser.add_argument('--keywords', required=True, nargs='+', help='DBLP searching keywords')
+    parser.add_argument('--output', required=True, help='Output BibTeX folder')
     parser.add_argument('--version', action='version', version=__version__)
     args = parser.parse_args()
 
@@ -120,8 +121,8 @@ def main():
                 print_error("[{}] articles found".format(len(articles)))
             else:
                 print_info("[{}] articles found".format(len(articles)))
-            dblp.save(area, conf, articles)
-        summary(area)
+            dblp.save(args.output, area, conf, articles)
+        summary(args.output, area)
 
 
 if __name__ == "__main__":
