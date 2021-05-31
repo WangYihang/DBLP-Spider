@@ -11,7 +11,7 @@ from .core.conference import Conferences_CCF_B
 from .core.conference import Conferences_CCF_C
 from bs4 import BeautifulSoup
 
-__version__ = "0.0.2"
+__version__ = "0.0.3"
 
 
 def print_success(x): return termcolor.cprint(x, 'green')
@@ -104,8 +104,9 @@ def summary(base_folder, area):
     for bibtex in bibtexes:
         with open(bibtex, "r") as f:
             bibtexes_contents.append(f.read())
-    with open(os.path.join(folder, "summary.bib"), "w") as f:
-        f.write("\n".join(bibtexes_contents))
+    if len(bibtexes_contents) > 0:
+        with open(os.path.join(folder, "summary.bib"), "w") as f:
+            f.write("\n".join(bibtexes_contents))
 
 
 def main():
