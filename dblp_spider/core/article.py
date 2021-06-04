@@ -13,7 +13,10 @@ class Article:
         self.bibtex_link = bibtex_link
 
     def __str__(self):
-        return "[{} - {}] {} - {}".format(self.conf, self.year, self.title, self.authors[0])
+        if len(self.authors) > 0:
+            return "[{} - {}] {} - {}".format(self.conf, self.year, self.title, self.authors[0])
+        else:
+            return "[{} - {}] {}".format(self.conf, self.year, self.title)
 
     def get_bibtex(self):
         response = requests.get(self.bibtex_link)
