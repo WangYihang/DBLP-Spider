@@ -11,7 +11,7 @@ from .core.conference import Conferences_CCF_B
 from .core.conference import Conferences_CCF_C
 from bs4 import BeautifulSoup
 
-__version__ = "0.0.4"
+__version__ = "0.0.5"
 
 
 def print_success(x): return termcolor.cprint(x, 'green')
@@ -31,6 +31,25 @@ def legalise_filename(filename):
     for k, v in illegal_chars.items():
         legal_filename = legal_filename.replace(k, v)
     return legal_filename
+
+
+def legalise_area(area):
+    result = area.strip()
+    eliminations = [
+        "(", ")", "|", " ",
+    ]
+    for elimination in eliminations:
+        keyword = (" {}".format(elimination))
+        while keyword in result:
+            result = result[:result.index(
+                keyword)] + elimination + result[result.index(keyword) + len(keyword):]
+        keyword = ("{} ".format(elimination))
+        while keyword in result:
+            result = result[:result.index(
+                keyword)] + elimination + result[result.index(keyword) + len(keyword):]
+    for elimination in eliminations[0:-1]:
+        result = result.replace(elimination, " {} ".format(elimination))
+    return result.strip().replace("  ", " ")
 
 
 class DBLP:
@@ -141,13 +160,14 @@ def main():
 
     for area in args.keywords:
         for venue in venues:
-            articles = dblp.search(area, venue)
+            legal_area = legalise_area(area)
+            articles = dblp.search(legal_area, venue)
             if len(articles) == 0:
                 print_error("[{}] articles found".format(len(articles)))
             else:
                 print_info("[{}] articles found".format(len(articles)))
-            dblp.save(args.output, area, venue, articles)
-        summary(args.output, area)
+            dblp.save(args.output, legal_area, venue, articles)
+        summary(args.output, legal_area)
 
 
 if __name__ == "__main__":
