@@ -11,7 +11,7 @@ from .core.conference import Conferences_CCF_B
 from .core.conference import Conferences_CCF_C
 from bs4 import BeautifulSoup
 
-__version__ = "0.0.3"
+__version__ = "0.0.4"
 
 
 def print_success(x): return termcolor.cprint(x, 'green')
