@@ -2,7 +2,7 @@
 
 A spider tool for downloading the DBLP search results into local BibTeX files.
 
-## Install
+## Installation
 
 ```bash
 pip3 install -i https://pypi.org/simple/ dblp-spider
@@ -46,7 +46,7 @@ dblp-spider --keywords "DNS Security" "BGP Security" --output result
 1. File->Import
 2. Select `summary.bib`
 
-## Acknowledgement
+## Acknowledgements
 
 * [DBLP](https://dblp.uni-trier.de/)
 * [默小西](https://github.com/mo-xiaoxi)
